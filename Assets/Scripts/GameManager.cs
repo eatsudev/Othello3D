@@ -5,28 +5,24 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-
-    [SerializeField]
-    private Camera cam;
-
-    [SerializeField]
-    private Disc discBlackUp;
-
-    [SerializeField]
-    private Disc discWhiteUp;
-
-    [SerializeField]
-    private GameObject highlightPrefab;
-
-    [SerializeField]
-    private UIManager uiManager;
+    [SerializeField] private Camera cam;
+    [SerializeField] private Disc discBlackUp;
+    [SerializeField] private Disc discWhiteUp;
+    [SerializeField] private GameObject highlightPrefab;
+    [SerializeField] private UIManager uiManager;
 
     private Dictionary<Player, Disc> discPrefabs = new Dictionary<Player, Disc>();
     private GameState gameState = new GameState();
     private Disc[,] discs = new Disc[8, 8];
     private List<GameObject> highlights = new List<GameObject>();
+    private bool isGameOver = false;
 
     private void Start()
+    {
+        InitializeGame();
+    }
+
+    private void InitializeGame()
     {
         discPrefabs[Player.Black] = discBlackUp;
         discPrefabs[Player.White] = discWhiteUp;
@@ -36,7 +32,6 @@ public class GameManager : MonoBehaviour
         uiManager.SetPlayerText(gameState.CurrentPlayer);
     }
 
-    
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -44,16 +39,21 @@ public class GameManager : MonoBehaviour
             Application.Quit();
         }
 
-        if (Input.GetMouseButtonDown(0))
+        if (!isGameOver && Input.GetMouseButtonDown(0))
         {
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+            HandleMouseInput();
+        }
+    }
 
-            if (Physics.Raycast(ray, out RaycastHit hitInfo))
-            {
-                Vector3 impact = hitInfo.point;
-                Position boardPos = SceneToBoardPos(impact);
-                OnBoardClicked(boardPos);
-            }
+    private void HandleMouseInput()
+    {
+        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out RaycastHit hitInfo))
+        {
+            Vector3 impact = hitInfo.point;
+            Position boardPos = SceneToBoardPos(impact);
+            OnBoardClicked(boardPos);
         }
     }
 
@@ -69,7 +69,10 @@ public class GameManager : MonoBehaviour
 
     private void HideLegalMoves()
     {
-        highlights.ForEach(Destroy);
+        foreach (GameObject highlight in highlights)
+        {
+            Destroy(highlight);
+        }
         highlights.Clear();
     }
 
@@ -118,7 +121,7 @@ public class GameManager : MonoBehaviour
 
     private void FlipDiscs(List<Position> positions)
     {
-        foreach(Position boardPos in positions)
+        foreach (Position boardPos in positions)
         {
             discs[boardPos.Row, boardPos.Col].Flip();
         }
@@ -135,7 +138,7 @@ public class GameManager : MonoBehaviour
     private IEnumerator ShowTurnSkipped(Player skippedPlayer)
     {
         uiManager.SetSkippedText(skippedPlayer);
-        yield break;
+        yield return null;
     }
 
     private IEnumerator ShowGameOver(Player winner)
@@ -153,6 +156,7 @@ public class GameManager : MonoBehaviour
         if (gameState.GameOver)
         {
             yield return ShowGameOver(gameState.Winner);
+            isGameOver = true;
             yield break;
         }
 
@@ -200,5 +204,4 @@ public class GameManager : MonoBehaviour
     {
         StartCoroutine(RestartGame());
     }
-
 }
