@@ -1691,7 +1691,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfc99c051fb0eb74bb604353bb86951e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roomListPrefab: {fileID: 6428473995725389787, guid: d506e4d800196b74d97ec7bac7a4b67b, type: 3}
+  itemPrefab: {fileID: 6428473995725389787, guid: d506e4d800196b74d97ec7bac7a4b67b, type: 3}
   content: {fileID: 743487863}
 --- !u!4 &2117805568
 Transform:
