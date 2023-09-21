@@ -7,13 +7,35 @@ using UnityEngine.UI;
 
 public class ServerManager : MonoBehaviourPunCallbacks
 {
-    int roomPin;
+    public Text roomPin;
 
     [Header("Required Components")]
     public Item itemPrefab;
     public Transform content;
 
     private List<Item> items = new List<Item>();
+
+    void Start()
+    {
+        PhotonNetwork.ConnectUsingSettings();
+    }
+
+    // Update is called once per frame
+    public override void OnConnectedToMaster()
+    {
+        base.OnConnectedToMaster();
+        PhotonNetwork.JoinLobby();
+    }
+
+    public override void OnJoinedLobby()
+    {
+        base.OnJoinedLobby();
+    }
+
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        base.OnDisconnected(cause);
+    }
 
     public void CreateRoom()
     {
@@ -22,7 +44,7 @@ public class ServerManager : MonoBehaviourPunCallbacks
 
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.MaxPlayers = 2;
-        PhotonNetwork.JoinOrCreateRoom(roomPin.ToString(), roomOptions, TypedLobby.Default);
+        PhotonNetwork.JoinOrCreateRoom(roomPin.text, roomOptions, TypedLobby.Default);
     }
 
     public override void OnCreatedRoom()
