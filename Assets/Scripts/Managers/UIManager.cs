@@ -18,6 +18,8 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private RectTransform playAgainButton;
 
+    public Text roomStatus;
+
     public void SetPlayerText(Player currentPlayer)
     {
         if (currentPlayer == Player.Black)
@@ -47,6 +49,11 @@ public class UIManager : MonoBehaviour
         topText.text = message;
     }
 
+    public void SetStatus(string status)
+    {
+        roomStatus.text = status;
+    }
+
     private IEnumerator ScaleDown(RectTransform rect)
     {
         rect.LeanScale(Vector3.zero, 0.2f);
@@ -66,6 +73,12 @@ public class UIManager : MonoBehaviour
     {
         yield return ScaleUp(blackScoreText.rectTransform);
         yield return ScaleUp(whiteScoreText.rectTransform);
+    }
+
+    public IEnumerator DisableStatusUI(float delay)
+    {
+        yield return delay;
+        roomStatus.gameObject.SetActive(false);
     }
 
 
