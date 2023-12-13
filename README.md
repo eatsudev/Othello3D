@@ -1,4 +1,5 @@
 # Othello3D
-classic othello board game.
-multiplayer mode (discontinued)
+<div>classic othello board game.</div>
+
+multiplayer mode progress : discontinued.
 
